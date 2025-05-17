@@ -1,0 +1,1015 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>World Bank - Customer Management</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #003366;
+            --secondary-color: #0056b3;
+            --accent-color: #ffcc00;
+            --light-color: #f8f9fa;
+            --dark-color: #212529;
+            --success-color: #28a745;
+            --error-color: #dc3545;
+            --form-bg: rgba(255, 255, 255, 0.95);
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            color: var(--dark-color);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background-color: var(--light-color);
+        }
+        
+        /* Header Styles */
+        header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            padding: 1rem 2rem;
+            color: white;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            position: relative;
+            z-index: 1000;
+        }
+        
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo h1 {
+            font-size: 1.8rem;
+            margin: 0;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+        
+        .logo span {
+            color: var(--accent-color);
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        
+        nav li {
+            margin-left: 1.5rem;
+            position: relative;
+        }
+        
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1rem;
+            padding: 0.5rem 0;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        nav a:after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: 0;
+            left: 0;
+            background-color: var(--accent-color);
+            transition: width 0.3s ease;
+        }
+        
+        nav a:hover:after {
+            width: 100%;
+        }
+        
+        nav a:hover {
+            color: var(--accent-color);
+        }
+        
+        /* Main Content Styles */
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+            flex: 1;
+            width: 100%;
+        }
+        
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        
+        .dashboard-header h2 {
+            color: var(--primary-color);
+            font-size: 1.8rem;
+            margin: 0;
+            color: white;
+        }
+        
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.6rem 1.2rem;
+            background-color: var(--accent-color);
+            color: var(--primary-color);
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .back-btn:hover {
+            background-color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Tab Styles */
+        .customer-tabs {
+            display: flex;
+            border-bottom: 2px solid #ddd;
+            margin-bottom: 2rem;
+        }
+        
+        .tab-btn {
+            padding: 0.8rem 1.5rem;
+            background: none;
+            border: none;
+            border-bottom: 3px solid transparent;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--dark-color);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .tab-btn.active {
+            color: var(--primary-color);
+            border-bottom-color: var(--accent-color);
+        }
+        
+        .tab-btn:hover:not(.active) {
+            color: var(--secondary-color);
+        }
+        
+        .tab-content {
+            display: none;
+            padding: 1.5rem;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        /* Form Styles */
+        .form-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group {
+            flex: 1;
+            min-width: 250px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+            transition: all 0.2s ease;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(255, 204, 0, 0.2);
+        }
+        
+        .form-group input[readonly] {
+            background-color: #f5f5f5;
+            cursor: not-allowed;
+        }
+        
+        .search-section {
+            margin-bottom: 2rem;
+        }
+        
+        .search-section .form-group {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .search-section input {
+            flex: 1;
+        }
+        
+        .search-btn {
+            padding: 0 1.5rem;
+            background-color: var(--accent-color);
+            color: var(--primary-color);
+            border: none;
+            border-radius: 4px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .search-btn:hover {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+        
+        .submit-btn {
+            display: inline-block;
+            padding: 0.8rem 2rem;
+            background-color: var(--accent-color);
+            color: var(--primary-color);
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+        }
+        
+        .submit-btn:hover {
+            background-color: var(--secondary-color);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Customer Details */
+        .customer-details {
+            background-color: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        .customer-details h3 {
+            color: var(--primary-color);
+            margin-top: 0;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .detail-row {
+            display: flex;
+            margin-bottom: 1rem;
+        }
+        
+        .detail-label {
+            font-weight: 600;
+            width: 150px;
+            color: var(--primary-color);
+        }
+        
+        .detail-value {
+            flex: 1;
+        }
+        
+        .delete-btn {
+            display: inline-block;
+            padding: 0.8rem 2rem;
+            background-color: var(--error-color);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1.5rem;
+        }
+        
+        .delete-btn:hover {
+            background-color: #c82333;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Status Message */
+        .status-message {
+            padding: 1rem;
+            border-radius: 4px;
+            margin-top: 1.5rem;
+            font-weight: 500;
+            display: none;
+        }
+        
+        .status-message.success {
+            background-color: rgba(40, 167, 69, 0.1);
+            color: var(--success-color);
+            border: 1px solid var(--success-color);
+        }
+        
+        .status-message.error {
+            background-color: rgba(220, 53, 69, 0.1);
+            color: var(--error-color);
+            border: 1px solid var(--error-color);
+        }
+        
+        /* Footer Styles */
+        footer {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 3rem 2rem 1.5rem;
+        }
+        
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+        
+        .footer-logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+        
+        .footer-logo span {
+            color: var(--accent-color);
+        }
+        
+        .footer-contact p {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+        
+        .footer-contact i {
+            margin-right: 0.5rem;
+            color: var(--accent-color);
+        }
+        
+        .footer-links h3 {
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+        
+        .footer-links h3:after {
+            content: '';
+            position: absolute;
+            width: 50px;
+            height: 2px;
+            background-color: var(--accent-color);
+            bottom: -8px;
+            left: 0;
+        }
+        
+        .footer-links ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .footer-links li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .footer-links a {
+            color: white;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        .footer-links a:hover {
+            color: var(--accent-color);
+        }
+        
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            margin-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .hidden {
+            display: none !important;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header-container {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            nav ul {
+                margin-top: 1rem;
+            }
+            
+            nav li {
+                margin: 0 0.5rem;
+            }
+            
+            .dashboard-header {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+            
+            .customer-tabs {
+                flex-direction: column;
+            }
+            
+            .tab-btn {
+                border-bottom: none;
+                border-left: 3px solid transparent;
+                text-align: left;
+            }
+            
+            .tab-btn.active {
+                border-left-color: var(--accent-color);
+                border-bottom: none;
+            }
+            
+            .search-section .form-group {
+                flex-direction: column;
+            }
+            
+            .search-btn {
+                padding: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <div class="logo">
+                <h1>World<span>Bank</span></h1>
+            </div>
+            <nav>
+                <ul>
+                   
+                    <li><a href="customer.html">Customers</a></li>
+                    <li><a href="transaction.html">Transactions</a></li>
+                   
+                    <li><a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <header class="dashboard-header">
+            <h2>Customer Management</h2>
+            <a href="home.html" class="back-btn">← Back to Dashboard</a>
+        </header>
+
+        <div class="customer-tabs">
+            <button class="tab-btn active" data-tab="create">Create New Customer</button>
+            <button class="tab-btn" data-tab="edit">Edit Customer</button>
+            <button class="tab-btn" data-tab="delete">Delete Customer</button>
+        </div>
+
+        <!-- Create Customer Form -->
+        <div id="createCustomerForm" class="tab-content active">
+            <form id="newCustomerForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="ssnId">SSN ID*</label>
+                        <input type="text" id="ssnId" pattern="\d{9}" title="9 digit SSN" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="customerName">Customer Name*</label>
+                        <input type="text" id="customerName" maxlength="50" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="accountNumber">Account Number*</label>
+                        <input type="text" id="accountNumber" pattern="\d{12}" title="12 digit account number" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="ifscCode">IFSC Code*</label>
+                        <input type="text" id="ifscCode" pattern="[A-Z]{4}0[A-Z0-9]{6}" title="11 character IFSC code" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="accountBalance">Account Balance ($)*</label>
+                        <input type="number" id="accountBalance" min="0" step="0.01" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="aadharNumber">Aadhar Number*</label>
+                        <input type="text" id="aadharNumber" pattern="\d{12}" title="12 digit Aadhar number" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="panNumber">PAN Number*</label>
+                        <input type="text" id="panNumber" pattern="[A-Z]{5}[0-9]{4}[A-Z]{1}" title="10 character PAN" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="dob">Date of Birth*</label>
+                        <input type="date" id="dob" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="gender">Gender*</label>
+                        <select id="gender" required>
+                            <option value="">Select</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="maritalStatus">Marital Status</label>
+                        <select id="maritalStatus">
+                            <option value="">Select</option>
+                            <option value="Single">Single</option>
+                            <option value="Married">Married</option>
+                            <option value="Divorced">Divorced</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="email">Email*</label>
+                        <input type="email" id="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="contactNumber">Contact Number*</label>
+                        <input type="tel" id="contactNumber" pattern="\d{10}" title="10 digit number" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="address">Address*</label>
+                    <textarea id="address" rows="3" required></textarea>
+                </div>
+
+                <button type="submit" class="submit-btn">Create Customer</button>
+            </form>
+        </div>
+
+        <!-- Edit Customer Form -->
+        <div id="editCustomerForm" class="tab-content">
+            <div class="search-section">
+                <div class="form-group">
+                    <label for="searchCustomer">Search Customer (SSN ID or Account Number)</label>
+                    <input type="text" id="searchCustomer" placeholder="Enter SSN ID or Account Number">
+                    <button id="searchBtn" class="search-btn">Search</button>
+                </div>
+            </div>
+
+            <form id="updateCustomerForm" class="hidden">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="editSsnId">SSN ID</label>
+                        <input type="text" id="editSsnId" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="editCustomerName">Customer Name*</label>
+                        <input type="text" id="editCustomerName" maxlength="50" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="editAccountNumber">Account Number</label>
+                        <input type="text" id="editAccountNumber" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="editIfscCode">IFSC Code*</label>
+                        <input type="text" id="editIfscCode" pattern="[A-Z]{4}0[A-Z0-9]{6}" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="editAddress">Address*</label>
+                    <textarea id="editAddress" rows="3" required></textarea>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="editContactNumber">Contact Number*</label>
+                        <input type="tel" id="editContactNumber" pattern="\d{10}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editEmail">Email*</label>
+                        <input type="email" id="editEmail" required>
+                    </div>
+                </div>
+
+                <button type="submit" class="submit-btn">Update Customer</button>
+            </form>
+        </div>
+
+        <!-- Delete Customer Form -->
+        <div id="deleteCustomerForm" class="tab-content">
+            <div class="search-section">
+                <div class="form-group">
+                    <label for="deleteSearchCustomer">Search Customer (SSN ID or Account Number)</label>
+                    <input type="text" id="deleteSearchCustomer" placeholder="Enter SSN ID or Account Number">
+                    <button id="deleteSearchBtn" class="search-btn">Search</button>
+                </div>
+            </div>
+
+            <div id="deleteCustomerDetails" class="customer-details hidden">
+                <h3>Customer Details</h3>
+                <div class="detail-row">
+                    <span class="detail-label">SSN ID:</span>
+                    <span id="deleteSsnId" class="detail-value"></span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Name:</span>
+                    <span id="deleteCustomerName" class="detail-value"></span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Account Number:</span>
+                    <span id="deleteAccountNumber" class="detail-value"></span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Account Balance:</span>
+                    <span id="deleteAccountBalance" class="detail-value"></span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Email:</span>
+                    <span id="deleteEmail" class="detail-value"></span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Contact Number:</span>
+                    <span id="deleteContactNumber" class="detail-value"></span>
+                </div>
+
+                <button id="confirmDeleteBtn" class="delete-btn">Confirm Delete</button>
+            </div>
+        </div>
+
+        <!-- Status Message -->
+        <div id="statusMessage" class="status-message hidden"></div>
+    </div>
+
+    <footer>
+        <div class="footer-container">
+            <div class="footer-about">
+                <div class="footer-logo">World<span>Bank</span></div>
+                <p>Providing innovative banking solutions since 1985. Our customer management system helps financial institutions serve their clients better.</p>
+            </div>
+            
+            <div class="footer-links">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="dashboard.html">Dashboard</a></li>
+                    <li><a href="customer.html">Customer Management</a></li>
+                    <li><a href="transaction.html">Transactions</a></li>
+                    <li><a href="profile.html">Profile</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-contact">
+                <h3>Contact Us</h3>
+                <p><i class="fas fa-phone"></i> (123) 456-7890</p>
+                <p><i class="fas fa-envelope"></i> support@worldbank.com</p>
+                <p><i class="fas fa-map-marker-alt"></i> 123 Financial District, New York, NY 10005</p>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <p>&copy; 2025 World Bank. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Check session
+            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+            const session = JSON.parse(localStorage.getItem('currentSession')) || {};
+            const employee = JSON.parse(localStorage.getItem('loggedInEmployee')) || null;
+            
+            if (!isLoggedIn || !session.loggedIn || !employee) {
+                alert('Please login to continue');
+                window.location.href = 'login.html';
+                return;
+            }
+
+            // Logout functionality
+            document.getElementById('logoutBtn').addEventListener('click', function(e) {
+                e.preventDefault();
+                localStorage.removeItem('isLoggedIn');
+                localStorage.removeItem('loggedInEmployee');
+                localStorage.removeItem('currentSession');
+                window.location.href = 'login.html';
+            });
+
+            // Tab functionality
+            const tabs = document.querySelectorAll('.tab-btn');
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    
+                    document.querySelectorAll('.tab-content').forEach(content => {
+                        content.classList.remove('active');
+                    });
+                    document.getElementById(tab.dataset.tab + 'CustomerForm').classList.add('active');
+                });
+            });
+
+            // Initialize customers array if not exists
+            if (!localStorage.getItem('customers')) {
+                localStorage.setItem('customers', JSON.stringify([]));
+            }
+
+            // Create Customer Form - FIXED SUBMISSION
+            const newCustomerForm = document.getElementById('newCustomerForm');
+            newCustomerForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Get form values
+                const customer = {
+                    ssnId: document.getElementById('ssnId').value.trim(),
+                    name: document.getElementById('customerName').value.trim(),
+                    accountNumber: document.getElementById('accountNumber').value.trim(),
+                    ifscCode: document.getElementById('ifscCode').value.trim(),
+                    balance: parseFloat(document.getElementById('accountBalance').value),
+                    aadharNumber: document.getElementById('aadharNumber').value.trim(),
+                    panNumber: document.getElementById('panNumber').value.trim(),
+                    dob: document.getElementById('dob').value,
+                    gender: document.getElementById('gender').value,
+                    maritalStatus: document.getElementById('maritalStatus').value,
+                    email: document.getElementById('email').value.trim(),
+                    address: document.getElementById('address').value.trim(),
+                    contactNumber: document.getElementById('contactNumber').value.trim(),
+                    createdBy: employee.empId,
+                    createdAt: new Date().toISOString()
+                };
+
+                // Validate required fields
+                if (!validateCustomer(customer)) {
+                    return;
+                }
+
+                // Check if customer already exists
+                const customers = JSON.parse(localStorage.getItem('customers')) || [];
+                const existingCustomer = customers.find(c => 
+                    c.ssnId === customer.ssnId || c.accountNumber === customer.accountNumber
+                );
+                
+                if (existingCustomer) {
+                    showStatus('Customer with this SSN ID or Account Number already exists', 'error');
+                    return;
+                }
+
+                // Add new customer
+                customers.push(customer);
+                localStorage.setItem('customers', JSON.stringify(customers));
+
+                // Show success message and clear form
+                showStatus('Customer created successfully!', 'success');
+                setTimeout(() => {
+                    newCustomerForm.reset();
+                }, 2000);
+            });
+
+            // Edit Customer Functionality
+            const searchBtn = document.getElementById('searchBtn');
+            searchBtn.addEventListener('click', function() {
+                const searchTerm = document.getElementById('searchCustomer').value.trim();
+                if (!searchTerm) {
+                    showStatus('Please enter SSN ID or Account Number', 'error');
+                    return;
+                }
+
+                const customers = JSON.parse(localStorage.getItem('customers')) || [];
+                const customer = customers.find(c => 
+                    c.ssnId === searchTerm || c.accountNumber === searchTerm
+                );
+
+                if (!customer) {
+                    showStatus('Customer not found', 'error');
+                    return;
+                }
+
+                // Populate edit form
+                document.getElementById('editSsnId').value = customer.ssnId;
+                document.getElementById('editCustomerName').value = customer.name;
+                document.getElementById('editAccountNumber').value = customer.accountNumber;
+                document.getElementById('editIfscCode').value = customer.ifscCode;
+                document.getElementById('editAddress').value = customer.address;
+                document.getElementById('editContactNumber').value = customer.contactNumber;
+                document.getElementById('editEmail').value = customer.email;
+
+                // Show edit form
+                document.getElementById('updateCustomerForm').classList.remove('hidden');
+            });
+
+            // Update Customer Form
+            const updateCustomerForm = document.getElementById('updateCustomerForm');
+            updateCustomerForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const searchTerm = document.getElementById('searchCustomer').value.trim();
+                const customers = JSON.parse(localStorage.getItem('customers')) || [];
+                const customerIndex = customers.findIndex(c => 
+                    c.ssnId === searchTerm || c.accountNumber === searchTerm
+                );
+
+                if (customerIndex === -1) {
+                    showStatus('Customer not found', 'error');
+                    return;
+                }
+
+                // Update editable fields
+                customers[customerIndex].name = document.getElementById('editCustomerName').value.trim();
+                customers[customerIndex].ifscCode = document.getElementById('editIfscCode').value.trim();
+                customers[customerIndex].address = document.getElementById('editAddress').value.trim();
+                customers[customerIndex].contactNumber = document.getElementById('editContactNumber').value.trim();
+                customers[customerIndex].email = document.getElementById('editEmail').value.trim();
+                customers[customerIndex].updatedBy = employee.empId;
+                customers[customerIndex].updatedAt = new Date().toISOString();
+
+                localStorage.setItem('customers', JSON.stringify(customers));
+                showStatus('Customer updated successfully!', 'success');
+            });
+
+            // Delete Customer Functionality
+            const deleteSearchBtn = document.getElementById('deleteSearchBtn');
+            deleteSearchBtn.addEventListener('click', function() {
+                const searchTerm = document.getElementById('deleteSearchCustomer').value.trim();
+                if (!searchTerm) {
+                    showStatus('Please enter SSN ID or Account Number', 'error');
+                    return;
+                }
+
+                const customers = JSON.parse(localStorage.getItem('customers')) || [];
+                const customer = customers.find(c => 
+                    c.ssnId === searchTerm || c.accountNumber === searchTerm
+                );
+
+                if (!customer) {
+                    showStatus('Customer not found', 'error');
+                    return;
+                }
+
+                // Display customer details
+                document.getElementById('deleteSsnId').textContent = customer.ssnId;
+                document.getElementById('deleteCustomerName').textContent = customer.name;
+                document.getElementById('deleteAccountNumber').textContent = customer.accountNumber;
+                document.getElementById('deleteAccountBalance').textContent = `$${customer.balance.toFixed(2)}`;
+                document.getElementById('deleteEmail').textContent = customer.email;
+                document.getElementById('deleteContactNumber').textContent = customer.contactNumber;
+
+                // Show delete confirmation
+                document.getElementById('deleteCustomerDetails').classList.remove('hidden');
+            });
+
+            // Confirm Delete Button
+            const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+            confirmDeleteBtn.addEventListener('click', function() {
+                const searchTerm = document.getElementById('deleteSearchCustomer').value.trim();
+                let customers = JSON.parse(localStorage.getItem('customers')) || [];
+                
+                // Filter out the customer to be deleted
+                customers = customers.filter(c => 
+                    c.ssnId !== searchTerm && c.accountNumber !== searchTerm
+                );
+
+                localStorage.setItem('customers', JSON.stringify(customers));
+                showStatus('Customer deleted successfully!', 'success');
+                
+                // Reset the delete form
+                document.getElementById('deleteSearchCustomer').value = '';
+                document.getElementById('deleteCustomerDetails').classList.add('hidden');
+            });
+
+            // Helper functions
+            function validateCustomer(customer) {
+                // Check required fields
+                if (!customer.ssnId || !customer.name || !customer.accountNumber || 
+                    !customer.ifscCode || isNaN(customer.balance) || !customer.aadharNumber || 
+                    !customer.panNumber || !customer.dob || !customer.gender || 
+                    !customer.email || !customer.address || !customer.contactNumber) {
+                    showStatus('Please fill all required fields', 'error');
+                    return false;
+                }
+
+                // Validate SSN ID (9 digits)
+                if (!/^\d{9}$/.test(customer.ssnId)) {
+                    showStatus('SSN ID must be 9 digits', 'error');
+                    return false;
+                }
+
+                // Validate Account Number (12 digits)
+                if (!/^\d{12}$/.test(customer.accountNumber)) {
+                    showStatus('Account number must be 12 digits', 'error');
+                    return false;
+                }
+
+                // Validate IFSC Code (11 characters)
+                if (!/^[A-Z]{4}0[A-Z0-9]{6}$/.test(customer.ifscCode)) {
+                    showStatus('Invalid IFSC code format', 'error');
+                    return false;
+                }
+
+                // Validate Aadhar Number (12 digits)
+                if (!/^\d{12}$/.test(customer.aadharNumber)) {
+                    showStatus('Aadhar number must be 12 digits', 'error');
+                    return false;
+                }
+
+                // Validate PAN Number
+                if (!/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(customer.panNumber)) {
+                    showStatus('Invalid PAN number format', 'error');
+                    return false;
+                }
+
+                // Validate balance
+                if (customer.balance < 0) {
+                    showStatus('Account balance cannot be negative', 'error');
+                    return false;
+                }
+
+                // Validate email
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(customer.email)) {
+                    showStatus('Please enter a valid email address', 'error');
+                    return false;
+                }
+
+                // Validate contact number
+                if (!/^\d{10}$/.test(customer.contactNumber)) {
+                    showStatus('Contact number must be 10 digits', 'error');
+                    return false;
+                }
+
+                return true;
+            }
+
+            function showStatus(message, type) {
+                const statusElement = document.getElementById('statusMessage');
+                statusElement.textContent = message;
+                statusElement.className = 'status-message ' + type;
+                statusElement.classList.remove('hidden');
+                
+                setTimeout(() => {
+                    statusElement.classList.add('hidden');
+                }, 3000);
+            }
+        });
+    </script>
+</body>
+</html>

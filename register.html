@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>World Bank - Employee Registration</title>
+  <style>
+    :root {
+      --primary-color: #003366; /* Deep blue - bank primary color */
+      --secondary-color: #0056b3; /* Lighter blue */
+      --accent-color: #ffcc00; /* Gold accent */
+      --light-color: #f8f9fa;
+      --dark-color: #212529;
+      --success-color: #28a745;
+      --error-color: #dc3545;
+      --form-bg: rgba(255, 255, 255, 0.9);
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      color: var(--dark-color);
+      line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background: linear-gradient(135deg, rgba(0, 51, 102, 0.9), rgba(0, 86, 179, 0.9)), 
+                  url('https://images.unsplash.com/photo-1601597111158-2fceff292cdc?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80') no-repeat center center/cover;
+    }
+    
+    /* Header Styles */
+    header {
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      padding: 1rem 2rem;
+      color: white;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      position: relative;
+      z-index: 1000;
+    }
+    
+    .header-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    .logo {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+    }
+    
+    .logo h1 {
+      font-size: 1.8rem;
+      margin: 0;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+    
+    .logo span {
+      color: var(--accent-color);
+    }
+    
+    nav ul {
+      display: flex;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+    
+    nav li {
+      margin-left: 1.5rem;
+      position: relative;
+    }
+    
+    nav a {
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 1rem;
+      padding: 0.5rem 0;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+    
+    nav a:after {
+      content: '';
+      position: absolute;
+      width: 0;
+      height: 2px;
+      bottom: 0;
+      left: 0;
+      background-color: var(--accent-color);
+      transition: width 0.3s ease;
+    }
+    
+    nav a:hover:after {
+      width: 100%;
+    }
+    
+    nav a:hover {
+      color: var(--accent-color);
+    }
+    
+    /* Main Content Styles */
+    main {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+    
+    .registration-container {
+      background: var(--form-bg);
+      border-radius: 10px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      width: 100%;
+      max-width: 600px;
+      padding: 2.5rem;
+      margin: 2rem 0;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(5px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    .registration-container h2 {
+      color: var(--primary-color);
+      text-align: center;
+      margin-bottom: 1.5rem;
+      font-size: 1.8rem;
+      position: relative;
+      padding-bottom: 10px;
+    }
+    
+    .registration-container h2:after {
+      content: '';
+      position: absolute;
+      width: 60px;
+      height: 3px;
+      background: var(--accent-color);
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+    
+    /* Form Styles */
+    .form-group {
+      margin-bottom: 1.5rem;
+      position: relative;
+    }
+    
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      color: var(--primary-color);
+    }
+    
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+      width: 100%;
+      padding: 0.8rem 1rem;
+      border: 2px solid #ddd;
+      border-radius: 6px;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      background-color: rgba(255, 255, 255, 0.8);
+    }
+    
+    .form-group input:focus,
+    .form-group textarea:focus,
+    .form-group select:focus {
+      outline: none;
+      border-color: var(--accent-color);
+      box-shadow: 0 0 0 3px rgba(255, 204, 0, 0.3);
+      background-color: white;
+    }
+    
+    .form-group textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+    
+    .form-group input[readonly] {
+      background-color: rgba(245, 245, 245, 0.8);
+      cursor: not-allowed;
+      font-weight: bold;
+      color: var(--primary-color);
+    }
+    
+    /* Button Styles */
+    .btn {
+      display: inline-block;
+      padding: 0.8rem 2rem;
+      background: linear-gradient(135deg, var(--accent-color), #ffdb58);
+      color: var(--primary-color);
+      text-decoration: none;
+      border-radius: 50px;
+      font-weight: 700;
+      font-size: 1.1rem;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      border: none;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 1rem;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .btn:hover {
+      background: linear-gradient(135deg, #ffdb58, var(--accent-color));
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+    }
+    
+    .btn:active {
+      transform: translateY(1px);
+    }
+    
+    /* Acknowledgment Screen */
+    #acknowledgmentScreen {
+      text-align: center;
+      display: none;
+      animation: fadeIn 0.5s ease-out;
+    }
+    
+    #acknowledgmentScreen h2 {
+      color: var(--success-color);
+      margin-bottom: 1rem;
+    }
+    
+    .success-message {
+      color: var(--success-color);
+      font-weight: 600;
+      font-size: 1.2rem;
+      margin-bottom: 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .success-message i {
+      margin-right: 10px;
+      font-size: 1.5rem;
+    }
+    
+    .ack-details {
+      background: rgba(248, 249, 250, 0.8);
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      text-align: left;
+      border-left: 4px solid var(--accent-color);
+    }
+    
+    .ack-details p {
+      margin-bottom: 0.8rem;
+      display: flex;
+    }
+    
+    .ack-details strong {
+      color: var(--primary-color);
+      display: inline-block;
+      width: 140px;
+      font-weight: 600;
+    }
+    
+    /* Error Styles */
+    .error {
+      color: var(--error-color);
+      font-size: 0.85rem;
+      margin-top: 0.3rem;
+      display: none;
+      font-weight: 500;
+    }
+    
+    /* Animations */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    /* Footer Styles */
+    footer {
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      color: white;
+      padding: 1.5rem 2rem;
+      text-align: center;
+    }
+    
+    .footer-container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    .footer-bottom {
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .header-container {
+        flex-direction: column;
+        text-align: center;
+      }
+      
+      nav ul {
+        margin-top: 1rem;
+      }
+      
+      nav li {
+        margin: 0 0.5rem;
+      }
+      
+      .registration-container {
+        padding: 1.5rem;
+      }
+      
+      body {
+        background-attachment: fixed;
+      }
+    }
+     .register-link a {
+      color: var(--secondary-color);
+      font-weight: 600;
+      text-decoration: none;
+      transition: color 0.3s ease;
+      
+        
+
+    }
+    
+    .register-link a:hover {
+      color: var(--accent-color);
+      text-decoration: underline;
+    }
+  </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+</head>
+<body>
+  <header>
+    <div class="header-container">
+      <div class="logo">
+        <h1 onclick="location.href='index.html'">World<span>Bank</span></h1>
+      </div>
+      <nav>
+        <ul>
+          <li><a href="login.html">Login</a></li>
+          <li><a href="register.html">Register</a></li>
+          <li><a href="contact.html">Contact Us</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+  
+  <main>
+    <div class="registration-container">
+      <!-- Registration Form -->
+      <div id="registrationFormContainer">
+        <h2>Employee Registration</h2>
+        <form id="registrationForm">
+          <div class="form-group">
+            <label for="empId">Employee ID</label>
+            <input type="text" id="empId" readonly>
+            <div class="error" id="empIdError"></div>
+          </div>
+          
+          <div class="form-group">
+            <label for="firstName">First Name</label>
+            <input type="text" id="firstName" maxlength="50" required>
+            <div class="error" id="firstNameError"></div>
+          </div>
+          
+          <div class="form-group">
+            <label for="lastName">Last Name</label>
+            <input type="text" id="lastName" maxlength="50" required>
+            <div class="error" id="lastNameError"></div>
+          </div>
+          
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" required>
+            <div class="error" id="emailError"></div>
+          </div>
+          
+          <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" maxlength="30" required>
+            <div class="error" id="passwordError"></div>
+          </div>
+          
+          <div class="form-group">
+            <label for="confirmPassword">Confirm Password</label>
+            <input type="password" id="confirmPassword" maxlength="30" required>
+            <div class="error" id="confirmPasswordError"></div>
+          </div>
+          
+          <div class="form-group">
+            <label for="address">Address</label>
+            <textarea id="address" maxlength="100" required></textarea>
+            <div class="error" id="addressError"></div>
+          </div>
+          
+          <div class="form-group">
+            <label for="contactNumber">Contact Number</label>
+            <input type="tel" id="contactNumber" maxlength="10" required>
+            <div class="error" id="contactNumberError"></div>
+          </div>
+          
+          <button type="submit" class="btn">Register Now</button>
+        </form>
+              <p class="register-link">Already Have an account? <a href="login.html">Login</a></p>
+      </div>
+
+      <!-- Acknowledgment Screen (hidden initially) -->
+      <div id="acknowledgmentScreen">
+        <h2>Registration Successful</h2>
+        <p class="success-message"><i class="fas fa-check-circle"></i> Employee Registration successful.</p>
+        <div class="ack-details">
+          <p><strong>Employee ID:</strong> <span id="ackEmpId"></span></p>
+          <p><strong>Name:</strong> <span id="ackName"></span></p>
+          <p><strong>Email:</strong> <span id="ackEmail"></span></p>
+          <p><strong>Contact Number:</strong> <span id="ackContact"></span></p>
+        </div>
+        <button id="backToLogin" class="btn">Back to Login</button>
+      </div>
+    </div>
+  </main>
+  
+  <footer>
+    <div class="footer-container">
+      <div class="footer-bottom">
+        <p>&copy; 2025 World Bank. All rights reserved. | Phone: (123) 456-7890</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      // Generate random 7-digit Employee ID on page load
+      const empIdField = document.getElementById('empId');
+      empIdField.value = generateEmployeeId();
+
+      const registrationForm = document.getElementById('registrationForm');
+      const ackScreen = document.getElementById('acknowledgmentScreen');
+      const formContainer = document.getElementById('registrationFormContainer');
+
+      // Add input event listeners for real-time validation
+      document.getElementById('firstName').addEventListener('input', validateFirstName);
+      document.getElementById('lastName').addEventListener('input', validateLastName);
+      document.getElementById('email').addEventListener('input', validateEmail);
+      document.getElementById('password').addEventListener('input', validatePassword);
+      document.getElementById('confirmPassword').addEventListener('input', validateConfirmPassword);
+      document.getElementById('address').addEventListener('input', validateAddress);
+      document.getElementById('contactNumber').addEventListener('input', validateContactNumber);
+
+      registrationForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        // Get form values
+        const empId = empIdField.value;
+        const firstName = document.getElementById('firstName').value.trim();
+        const lastName = document.getElementById('lastName').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const password = document.getElementById('password').value;
+        const confirmPassword = document.getElementById('confirmPassword').value;
+        const address = document.getElementById('address').value.trim();
+        const contactNumber = document.getElementById('contactNumber').value.trim();
+
+        // Validate all fields
+        const isFirstNameValid = validateFirstName();
+        const isLastNameValid = validateLastName();
+        const isEmailValid = validateEmail();
+        const isPasswordValid = validatePassword();
+        const isConfirmPasswordValid = validateConfirmPassword();
+        const isAddressValid = validateAddress();
+        const isContactNumberValid = validateContactNumber();
+
+        if (!isFirstNameValid || !isLastNameValid || !isEmailValid || 
+            !isPasswordValid || !isConfirmPasswordValid || 
+            !isAddressValid || !isContactNumberValid) {
+          return;
+        }
+
+        // Store employee data (simulating database)
+        const employee = {
+          empId,
+          firstName,
+          lastName,
+          email,
+          password,
+          address,
+          contactNumber
+        };
+
+        localStorage.setItem('currentEmployee', JSON.stringify(employee));
+
+        // Show acknowledgment
+        showAcknowledgment(employee);
+      });
+
+      document.getElementById('backToLogin').addEventListener('click', function() {
+        window.location.href = 'login.html';
+      });
+
+      // Helper functions
+      function generateEmployeeId() {
+        return Math.floor(1000000 + Math.random() * 9000000).toString();
+      }
+
+      // Validation functions
+      function validateFirstName() {
+        const firstName = document.getElementById('firstName').value.trim();
+        const errorElement = document.getElementById('firstNameError');
+        
+        if (!firstName) {
+          errorElement.textContent = 'First name is required';
+          errorElement.style.display = 'block';
+          return false;
+        }
+        
+        errorElement.style.display = 'none';
+        return true;
+      }
+
+      function validateLastName() {
+        const lastName = document.getElementById('lastName').value.trim();
+        const errorElement = document.getElementById('lastNameError');
+        
+        if (!lastName) {
+          errorElement.textContent = 'Last name is required';
+          errorElement.style.display = 'block';
+          return false;
+        }
+        
+        errorElement.style.display = 'none';
+        return true;
+      }
+
+      function validateEmail() {
+        const email = document.getElementById('email').value.trim();
+        const errorElement = document.getElementById('emailError');
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        
+        if (!email) {
+          errorElement.textContent = 'Email is required';
+          errorElement.style.display = 'block';
+          return false;
+        }
+        
+        if (!emailRegex.test(email)) {
+          errorElement.textContent = 'Please enter a valid email address';
+          errorElement.style.display = 'block';
+          return false;
+        }
+        
+        errorElement.style.display = 'none';
+        return true;
+      }
+
+      function validatePassword() {
+        const password = document.getElementById('password').value;
+        const errorElement = document.getElementById('passwordError');
+        
+        if (!password) {
+          errorElement.textContent = 'Password is required';
+          errorElement.style.display = 'block';
+          return false;
+        }
+        
+        if (password.length < 8) {
+          errorElement.textContent = 'Password must be at least 8 characters';
+          errorElement.style.display = 'block';
+          return false;
+        }
+        
+        errorElement.style.display = 'none';
+        return true;
+      }
+
+      function validateConfirmPassword() {
+        const password = document.getElementById('password').value;
+        const confirmPassword = document.getElementById('confirmPassword').value;
+        const errorElement = document.getElementById('confirmPasswordError');
+        
+        if (!confirmPassword) {
+          errorElement.textContent = 'Please confirm your password';
+          errorElement.style.display = 'block';
+          return false;
+        }
+        
+        if (password !== confirmPassword) {
+          errorElement.textContent = 'Passwords do not match';
+          errorElement.style.display = 'block';
+          return false;
+        }
+        
+        errorElement.style.display = 'none';
+        return true;
+      }
+
+      function validateAddress() {
+        const address = document.getElementById('address').value.trim();
+        const errorElement = document.getElementById('addressError');
+        
+        if (!address) {
+          errorElement.textContent = 'Address is required';
+          errorElement.style.display = 'block';
+          return false;
+        }
+        
+        errorElement.style.display = 'none';
+        return true;
+      }
+
+      function validateContactNumber() {
+        const contactNumber = document.getElementById('contactNumber').value.trim();
+        const errorElement = document.getElementById('contactNumberError');
+        
+        if (!contactNumber) {
+          errorElement.textContent = 'Contact number is required';
+          errorElement.style.display = 'block';
+          return false;
+        }
+        
+        if (!/^\d{10}$/.test(contactNumber)) {
+          errorElement.textContent = 'Contact number must be 10 digits';
+          errorElement.style.display = 'block';
+          return false;
+        }
+        
+        errorElement.style.display = 'none';
+        return true;
+      }
+
+      function showAcknowledgment(employee) {
+        // Populate acknowledgment screen
+        document.getElementById('ackEmpId').textContent = employee.empId;
+        document.getElementById('ackName').textContent = `${employee.firstName} ${employee.lastName}`;
+        document.getElementById('ackEmail').textContent = employee.email;
+        document.getElementById('ackContact').textContent = employee.contactNumber;
+
+        // Switch views
+        formContainer.style.display = 'none';
+        ackScreen.style.display = 'block';
+      }
+    });
+  </script>
+</body>
+</html>

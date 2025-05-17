@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>World Bank - Employee Login</title>
+  <style>
+    :root {
+      --primary-color: #003366; /* Deep blue - bank primary color */
+      --secondary-color: #0056b3; /* Lighter blue */
+      --accent-color: #ffcc00; /* Gold accent */
+      --light-color: #f8f9fa;
+      --dark-color: #212529;
+      --success-color: #28a745;
+      --error-color: #dc3545;
+      --form-bg: rgba(255, 255, 255, 0.9);
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      color: var(--dark-color);
+      line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background: linear-gradient(135deg, rgba(0, 51, 102, 0.9), rgba(0, 86, 179, 0.9)), 
+                  url('https://images.unsplash.com/photo-1601597111158-2fceff292cdc?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80') no-repeat center center/cover;
+    }
+    
+    /* Header Styles */
+    header {
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      padding: 1rem 2rem;
+      color: white;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      position: relative;
+      z-index: 1000;
+    }
+    
+    .header-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    .logo {
+      display: flex;
+      align-items: center;
+    }
+    
+    .logo h1 {
+      font-size: 1.8rem;
+      margin: 0;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+        cursor: pointer;
+    }
+    
+    .logo span {
+      color: var(--accent-color);
+    }
+    
+    nav ul {
+      display: flex;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+    
+    nav li {
+      margin-left: 1.5rem;
+      position: relative;
+    }
+    
+    nav a {
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 1rem;
+      padding: 0.5rem 0;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+    
+    nav a:after {
+      content: '';
+      position: absolute;
+      width: 0;
+      height: 2px;
+      bottom: 0;
+      left: 0;
+      background-color: var(--accent-color);
+      transition: width 0.3s ease;
+    }
+    
+    nav a:hover:after {
+      width: 100%;
+    }
+    
+    nav a:hover {
+      color: var(--accent-color);
+    }
+    
+    /* Main Content Styles */
+    main {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+    
+    .login-container {
+      background: var(--form-bg);
+      border-radius: 10px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      width: 100%;
+      max-width: 500px;
+      padding: 2.5rem;
+      margin: 2rem 0;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(5px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    .login-container h2 {
+      color: var(--primary-color);
+      text-align: center;
+      margin-bottom: 1.5rem;
+      font-size: 1.8rem;
+      position: relative;
+      padding-bottom: 10px;
+    }
+    
+    .login-container h2:after {
+      content: '';
+      position: absolute;
+      width: 60px;
+      height: 3px;
+      background: var(--accent-color);
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+    
+    /* Form Styles */
+    .form-group {
+      margin-bottom: 1.5rem;
+      position: relative;
+    }
+    
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      color: var(--primary-color);
+    }
+    
+    .form-group input {
+      width: 100%;
+      padding: 0.8rem 1rem;
+      border: 2px solid #ddd;
+      border-radius: 6px;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      background-color: rgba(255, 255, 255, 0.8);
+    }
+    
+    .form-group input:focus {
+      outline: none;
+      border-color: var(--accent-color);
+      box-shadow: 0 0 0 3px rgba(255, 204, 0, 0.3);
+      background-color: white;
+    }
+    
+    /* Button Styles */
+    .btn {
+      display: inline-block;
+      padding: 0.8rem 2rem;
+      background: linear-gradient(135deg, var(--accent-color), #ffdb58);
+      color: var(--primary-color);
+      text-decoration: none;
+      border-radius: 50px;
+      font-weight: 700;
+      font-size: 1.1rem;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      border: none;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 1rem;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+    
+    .btn:hover {
+      background: linear-gradient(135deg, #ffdb58, var(--accent-color));
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+    }
+    
+    .btn:active {
+      transform: translateY(1px);
+    }
+    
+    /* Register Link */
+    .register-link {
+      text-align: center;
+      margin-top: 1.5rem;
+      color: var(--primary-color);
+    }
+    
+    .register-link a {
+      color: var(--secondary-color);
+      font-weight: 600;
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+    
+    .register-link a:hover {
+      color: var(--accent-color);
+      text-decoration: underline;
+    }
+    
+    /* Status Message */
+    .status-message {
+      padding: 0.8rem 1rem;
+      border-radius: 6px;
+      margin-top: 1.5rem;
+      text-align: center;
+      font-weight: 500;
+      display: none;
+    }
+    
+    .status-message.success {
+      background-color: rgba(40, 167, 69, 0.2);
+      color: var(--success-color);
+      border: 1px solid var(--success-color);
+      display: block;
+    }
+    
+    .status-message.error {
+      background-color: rgba(220, 53, 69, 0.2);
+      color: var(--error-color);
+      border: 1px solid var(--error-color);
+      display: block;
+    }
+    
+    /* Footer Styles */
+    footer {
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      color: white;
+      padding: 1.5rem 2rem;
+      text-align: center;
+    }
+    
+    .footer-container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    .footer-bottom {
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .header-container {
+        flex-direction: column;
+        text-align: center;
+      }
+      
+      nav ul {
+        margin-top: 1rem;
+      }
+      
+      nav li {
+        margin: 0 0.5rem;
+      }
+      
+      .login-container {
+        padding: 1.5rem;
+      }
+      
+      body {
+        background-attachment: fixed;
+      }
+    }
+  </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+</head>
+<body>
+  <header>
+    <div class="header-container">
+      <div     class="logo">
+        <h1 onclick="location.href='index.html'">World<span>Bank</span></h1>
+      </div>
+      <nav>
+        <ul>
+          <li><a href="login.html">Login</a></li>
+          <li><a href="register.html">Register</a></li>
+          <li><a href="contact.html">Contact Us</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+  
+  <main>
+    <div class="login-container">
+      <h2>Employee Login</h2>
+      <form id="loginForm">
+        <div class="form-group">
+          <label for="empId">Employee ID</label>
+          <input type="text" id="empId" maxlength="10" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" maxlength="30" required>
+        </div>
+        
+        <button type="submit" class="btn">Login</button>
+      </form>
+      
+      <p class="register-link">Don't have an account? <a href="register.html">Register here</a></p>
+      
+      <!-- Login Status Message -->
+      <div id="loginStatus" class="status-message hidden"></div>
+    </div>
+  </main>
+  
+  <footer>
+    <div class="footer-container">
+      <div class="footer-bottom">
+        <p>&copy; 2025 World Bank. All rights reserved. | Phone: (123) 456-7890</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="login.js"></script>
+</body>
+</html>

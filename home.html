@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>World Bank - Employee Dashboard</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"/>
+  <style>
+    :root {
+      --primary-color: #003366;
+      --secondary-color: #0056b3;
+      --accent-color: #ffcc00;
+      --light-color: #f8f9fa;
+      --dark-color: #212529;
+      --success-color: #28a745;
+      --error-color: #dc3545;
+      --form-bg: rgba(255, 255, 255, 0.9);
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      color: var(--dark-color);
+      line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background: linear-gradient(135deg, rgba(0, 51, 102, 0.9), rgba(0, 86, 179, 0.9)), 
+                  url('https://images.unsplash.com/photo-1601597111158-2fceff292cdc?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80') no-repeat center center/cover;
+    }
+
+    /* Header Styles */
+    header {
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      padding: 1rem 2rem;
+      color: white;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      position: relative;
+      z-index: 1000;
+    }
+
+    .header-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+    }
+
+    .logo h1 {
+      font-size: 1.8rem;
+      margin: 0;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+
+    .logo span {
+      color: var(--accent-color);
+    }
+
+    nav ul {
+      display: flex;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    nav li {
+      margin-left: 1.5rem;
+      position: relative;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 1rem;
+      padding: 0.5rem 0;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    nav a:after {
+      content: '';
+      position: absolute;
+      width: 0;
+      height: 2px;
+      bottom: 0;
+      left: 0;
+      background-color: var(--accent-color);
+      transition: width 0.3s ease;
+    }
+
+    nav a:hover:after {
+      width: 100%;
+    }
+
+    nav a:hover {
+      color: var(--accent-color);
+    }
+
+    .employee-info {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-right: auto;
+      margin-left: 2rem;
+      color: rgb(250, 250, 252);
+      font-weight: 500;
+    }
+
+    /* Dashboard Styles */
+    .dashboard-container {
+      max-width: 1200px;
+      margin: 2rem auto;
+      padding: 0 2rem;
+      flex: 1;
+    }
+
+    .dashboard-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+      background: var(--form-bg);
+      padding: 1.5rem;
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      backdrop-filter: blur(5px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .logout-btn {
+      display: inline-block;
+      padding: 0.8rem 1.5rem;
+      background: linear-gradient(135deg, var(--accent-color), #ffdb58);
+      color: var(--primary-color);
+      text-decoration: none;
+      border-radius: 50px;
+      font-weight: 600;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      border: none;
+      cursor: pointer;
+    }
+
+    .logout-btn:hover {
+      background: linear-gradient(135deg, #ffdb58, var(--accent-color));
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    /* Horizontal Dashboard Options */
+    .dashboard-options {
+      display: flex;
+      overflow-x: auto;
+      gap: 1.5rem;
+      padding: 1rem 0;
+      scrollbar-width: thin;
+      scrollbar-color: var(--accent-color) transparent;
+    }
+
+    .dashboard-options::-webkit-scrollbar {
+      height: 8px;
+    }
+
+    .dashboard-options::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .dashboard-options::-webkit-scrollbar-thumb {
+      background-color: var(--accent-color);
+      border-radius: 20px;
+    }
+
+    .dashboard-btn {
+      background: var(--form-bg);
+      border-radius: 10px;
+      padding: 2rem;
+      min-width: 250px;
+      text-decoration: none;
+      color: var(--primary-color);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      backdrop-filter: blur(5px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    .dashboard-btn:hover {
+      transform: translateY(-5px) !important;
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    .btn-icon {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      color: var(--secondary-color);
+    }
+
+    .btn-text {
+      font-weight: 600;
+      font-size: 1.1rem;
+      text-align: center;
+    }
+
+    /* Footer Styles */
+    footer {
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      color: white;
+      padding: 3rem 2rem 1.5rem;
+    }
+
+    .footer-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 2rem;
+    }
+
+    .footer-logo {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
+
+    .footer-logo span {
+      color: var(--accent-color);
+    }
+
+    .footer-contact p {
+      display: flex;
+      align-items: center;
+      margin-bottom: 0.5rem;
+    }
+
+    .footer-contact i {
+      margin-right: 0.5rem;
+      color: var(--accent-color);
+    }
+
+    .footer-links h3 {
+      font-size: 1.2rem;
+      margin-bottom: 1.5rem;
+      position: relative;
+    }
+
+    .footer-links h3:after {
+      content: '';
+      position: absolute;
+      width: 50px;
+      height: 2px;
+      background-color: var(--accent-color);
+      bottom: -8px;
+      left: 0;
+    }
+
+    .footer-links ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .footer-links li {
+      margin-bottom: 0.5rem;
+    }
+
+    .footer-links a {
+      color: white;
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+
+    .footer-links a:hover {
+      color: var(--accent-color);
+    }
+
+    .footer-bottom {
+      text-align: center;
+      padding-top: 2rem;
+      margin-top: 2rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    /* Animations */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .fade-in {
+      animation: fadeIn 0.5s ease forwards;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .header-container {
+        flex-direction: column;
+        text-align: center;
+      }
+      
+      .employee-info {
+        margin: 1rem 0;
+      }
+      
+      nav ul {
+        margin-top: 1rem;
+      }
+      
+      nav li {
+        margin: 0 0.5rem;
+      }
+      
+      .dashboard-header {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+      }
+      
+      .dashboard-options {
+        flex-direction: column;
+        overflow-x: visible;
+      }
+      
+      .dashboard-btn {
+        min-width: auto;
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-container">
+      <div class="logo">
+        <h1>World<span>Bank</span></h1>
+      </div>
+      <div class="employee-info hidden" id="employeeInfo">
+        <i class="fas fa-id-badge"></i>
+        <span id="employeeName"></span> | <span id="employeeId"></span>
+      </div>
+      <nav>
+        <ul class="auth-nav" id="authNav">
+          <li><a href="login.html">Login</a></li>
+          <li><a href="register.html">Register</a></li>
+          <li><a href="contact.html">Contact Us</a></li>
+        </ul>
+        <ul class="user-nav hidden" id="userNav">
+          
+          <li><a href="#" id="navLogoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <div class="dashboard-container">
+    <header class="dashboard-header fade-in">
+      <h2 id="welcomeMessage">Welcome to Employee Dashboard</h2>
+        <button id="logoutBtn" class="logout-btn hidden"><i class="fas fa-sign-out-alt"></i> Logout</button>
+    </header>
+
+    <div class="dashboard-options" id="dashboardOptions">
+      <a href="customer.html" class="dashboard-btn">
+        <span class="btn-icon"><i class="fas fa-users"></i></span>
+        <span class="btn-text">Customer Management</span>
+      </a>
+      <a href="transaction.html" class="dashboard-btn">
+        <span class="btn-icon"><i class="fas fa-exchange-alt"></i></span>
+        <span class="btn-text">Transaction Processing</span>
+      </a>
+      <a href="loan.html" class="dashboard-btn">
+        <span class="btn-icon"><i class="fas fa-hand-holding-usd"></i></span>
+        <span class="btn-text">Loan Management</span>
+      </a>
+      <a href="account.html" class="dashboard-btn">
+        <span class="btn-icon"><i class="fas fa-user-circle"></i></span>
+        <span class="btn-text">Account Management</span>
+      </a>
+      <a href="reports.html" class="dashboard-btn">
+        <span class="btn-icon"><i class="fas fa-chart-bar"></i></span>
+        <span class="btn-text">Reports & Analytics</span>
+      </a>
+      <a href="settings.html" class="dashboard-btn">
+        <span class="btn-icon"><i class="fas fa-cog"></i></span>
+        <span class="btn-text">System Settings</span>
+      </a>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-container">
+      <div class="footer-about">
+        <div class="footer-logo">World<span>Bank</span></div>
+        <p>Providing innovative banking solutions since 1985. Our employee management system helps financial institutions optimize their workforce.</p>
+      </div>
+      
+      <div class="footer-links">
+        <h3>Quick Links</h3>
+        <ul>
+          <li><a href="login.html">Login</a></li>
+          <li><a href="register.html">Register</a></li>
+          <li><a href="contact.html">Contact Us</a></li>
+          <li><a href="#">Privacy Policy</a></li>
+        </ul>
+      </div>
+      
+      <div class="footer-contact">
+        <h3>Contact Us</h3>
+        <p><i class="fas fa-phone"></i> (123) 456-7890</p>
+        <p><i class="fas fa-envelope"></i> support@worldbank.com</p>
+        <p><i class="fas fa-map-marker-alt"></i> 123 Financial District, New York, NY 10005</p>
+      </div>
+    </div>
+    
+    <div class="footer-bottom">
+      <p>&copy; 2025 World Bank. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      // Check authentication status
+      const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+      const employee = JSON.parse(localStorage.getItem('loggedInEmployee') || '{}');
+      
+      // Get DOM elements
+      const authNav = document.getElementById('authNav');
+      const userNav = document.getElementById('userNav');
+      const employeeInfo = document.getElementById('employeeInfo');
+      const employeeName = document.getElementById('employeeName');
+      const employeeId = document.getElementById('employeeId');
+      const welcomeMessage = document.getElementById('welcomeMessage');
+      const logoutBtn = document.getElementById('logoutBtn');
+      const navLogoutBtn = document.getElementById('navLogoutBtn');
+      const dashboardOptions = document.getElementById('dashboardOptions');
+      const dashboardButtons = document.querySelectorAll('.dashboard-btn');
+
+      if (isLoggedIn && employee.empId) {
+        // User is logged in - show user-specific UI
+        authNav.classList.add('hidden');
+        userNav.classList.remove('hidden');
+        employeeInfo.classList.remove('hidden');
+        logoutBtn.classList.remove('hidden');
+        
+        // Display employee info
+        
+        employeeId.textContent = `ID: ${employee.empId}`;
+        welcomeMessage.textContent = `Welcome, ${employee.firstName} ${employee.lastName}`;
+        
+        // Animate dashboard buttons with staggered delay
+        dashboardButtons.forEach((btn, index) => {
+          btn.style.animation = `fadeIn 0.5s ease ${index * 0.1}s forwards`;
+        });
+      } else {
+        // User is not logged in - redirect to login
+        window.location.href = 'login.html';
+        return;
+      }
+
+      // Logout functionality
+      function logout(e) {
+        if (e) e.preventDefault();
+        localStorage.removeItem('isLoggedIn');
+        localStorage.removeItem('loggedInEmployee');
+        window.location.href = 'login.html';
+      }
+
+      logoutBtn.addEventListener('click', logout);
+      navLogoutBtn.addEventListener('click', logout);
+    });
+  </script>
+</body>
+</html>
