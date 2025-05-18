@@ -1,101 +1,405 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Transaction Processing</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Transaction Processing</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+  <style>
+    :root {
+      --primary: #003366;
+      --secondary: #0056b3;
+      --accent: #ffcc00;
+      --light: #f8f9fa;
+      --dark: #212529;
+    }
+    
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+       background: linear-gradient(135deg, rgba(0, 51, 102, 0.9), rgba(0, 86, 179, 0.9)), 
+                  url('https://images.unsplash.com/photo-1601597111158-2fceff292cdc?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80') no-repeat center center/cover;
+    }
+    
+    
+    /* Navbar Styles */
+    header {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      padding: 1rem 2rem;
+      color: white;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    
+    .header-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    .logo {
+      display: flex;
+      align-items: center;
+    }
+    
+    .logo h1 {
+      font-size: 1.8rem;
+      margin: 0;
+      font-weight: 700;
+      color: white;
+    }
+    
+    .logo span {
+      color: var(--accent);
+    }
+    
+    nav ul {
+      display: flex;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+    
+    nav li {
+      margin-left: 1.5rem;
+    }
+    
+    nav a {
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.3s ease;
+    }
+    
+    nav a:hover {
+      color: var(--accent);
+    }
+    
+    /* Main Content Styles */
+    .container {
+      flex: 1;
+      max-width: 1000px;
+      margin: 2rem auto;
+      padding: 150px;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    
+    h1, h2 {
+      color: var(--primary);
+      size: 30px;
+    }
+    
+    .form-group {
+      margin-bottom: 15px;
+    }
+    
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+    
+    input, select, textarea {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+    
+    button {
+      background-color: var(--primary);
+      color: white;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-right: 10px;
+      transition: background-color 0.3s ease;
+    }
+    
+    button:hover {
+      background-color: var(--secondary);
+    }
+    
+    /* Transaction History Styles */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: left;
+    }
+    
+    th {
+      background-color: var(--primary);
+      color: white;
+    }
+    
+    .hidden {
+      display: none;
+    }
+    
+    /* Footer Styles */
+    footer {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: white;
+      padding: 2rem;
+      margin-top: auto;
+    }
+    
+    .footer-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 2rem;
+    }
+    
+    .footer-logo {
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+    
+    .footer-logo span {
+      color: var(--accent);
+    }
+    
+    .footer-links h3 {
+      font-size: 1.2rem;
+      margin-bottom: 1rem;
+    }
+    
+    .footer-links ul {
+      list-style: none;
+      padding: 0;
+    }
+    
+    .footer-links a {
+      color: white;
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+    
+    .footer-links a:hover {
+      color: var(--accent);
+    }
+    
+    .footer-bottom {
+      text-align: center;
+      padding-top: 2rem;
+      margin-top: 2rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    @media (max-width: 768px) {
+      .header-container {
+        flex-direction: column;
+        text-align: center;
+      }
+      
+      nav ul {
+        margin-top: 1rem;
+      }
+      
+      nav li {
+        margin: 0 0.5rem;
+      }
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <header class="dashboard-header">
-            <h2>Transaction Processing</h2>
-            <a href="home.html" class="back-btn">← Back to Dashboard</a>
-        </header>
-
-        <form id="transactionForm">
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="transactionId">Transaction ID</label>
-                    <input type="text" id="transactionId" readonly>
-                </div>
-                <div class="form-group">
-                    <label for="customerSsnId">Customer SSN ID*</label>
-                    <input type="text" id="customerSsnId" pattern="\d{9}" required>
-                </div>
-            </div>
-
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="customerName">Customer Name</label>
-                    <input type="text" id="customerName" readonly>
-                </div>
-                <div class="form-group">
-                    <label for="accountId">Account ID</label>
-                    <input type="text" id="accountId" readonly>
-                </div>
-            </div>
-
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="aadharNumber">Aadhar Number</label>
-                    <input type="text" id="aadharNumber" readonly>
-                </div>
-                <div class="form-group">
-                    <label for="panNumber">PAN Number</label>
-                    <input type="text" id="panNumber" readonly>
-                </div>
-            </div>
-
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="address">Address</label>
-                    <textarea id="address" rows="2" readonly></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="contactNumber">Contact Number</label>
-                    <input type="text" id="contactNumber" readonly>
-                </div>
-            </div>
-
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="transactionDate">Date*</label>
-                    <input type="date" id="transactionDate" required>
-                </div>
-                <div class="form-group">
-                    <label for="transactionMode">Mode of Transaction*</label>
-                    <select id="transactionMode" required>
-                        <option value="">Select</option>
-                        <option value="Cash">Cash</option>
-                        <option value="Cheque">Cheque</option>
-                        <option value="Online Transfer">Online Transfer</option>
-                        <option value="Card Payment">Card Payment</option>
-                    </select>
-                </div>
-            </div>
-
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="transactionAmount">Amount*</label>
-                    <input type="number" id="transactionAmount" min="1" step="0.01" required>
-                </div>
-                <div class="form-group">
-                    <label for="transactionType">Transaction Type*</label>
-                    <select id="transactionType" required>
-                        <option value="">Select</option>
-                        <option value="Credit">Credit</option>
-                        <option value="Debit">Debit</option>
-                    </select>
-                </div>
-            </div>
-
-            <button type="submit" class="submit-btn">Process Transaction</button>
-        </form>
-
-        <div id="statusMessage" class="status-message hidden"></div>
+  <header>
+    <div class="header-container">
+      <div class="logo">
+        <h1>World<span>Bank</span></h1>
+      </div>
+      <nav>
+        <ul>
+          <li><a href="home.html"><i class="fas fa-home"></i> Dashboard</a></li>
+          <li><a href="#"><i class="fas fa-exchange-alt"></i> Transactions</a></li>
+          <li><a href="login.html"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+        </ul>
+      </nav>
     </div>
+  </header>
 
-    <script src="transaction.js"></script>
+  <div class="container">
+    <h1>Transaction Processing</h1>
+    
+    <div class="form-group">
+      <button id="showHistoryBtn"><i class="fas fa-history"></i> Show Transaction History</button>
+    </div>
+    
+    <form id="transactionForm">
+      <div class="form-group">
+        <label for="ssnId">Customer SSN ID*</label>
+        <input type="text" id="ssnId" pattern="\d{9}" title="9-digit SSN required" required>
+      </div>
+      
+      <div class="form-group">
+        <label for="customerName">Customer Name*</label>
+        <input type="text" id="customerName" required>
+      </div>
+      
+      <div class="form-group">
+        <label for="accountNumber">Account Number*</label>
+        <input type="text" id="accountNumber" required>
+      </div>
+      
+      <div class="form-group">
+        <label for="transactionType">Transaction Type*</label>
+        <select id="transactionType" required>
+          <option value="">Select</option>
+          <option value="Deposit">Deposit</option>
+          <option value="Withdrawal">Withdrawal</option>
+          <option value="Transfer">Transfer</option>
+        </select>
+      </div>
+      
+      <div class="form-group">
+        <label for="amount">Amount*</label>
+        <input type="number" id="amount" min="1" step="0.01" required>
+      </div>
+      
+      <div class="form-group">
+        <label for="description">Description</label>
+        <textarea id="description" rows="2"></textarea>
+      </div>
+      
+      <button type="submit"><i class="fas fa-check-circle"></i> Process Transaction</button>
+    </form>
+    
+    <div id="transactionHistory" class="hidden">
+      <h2><i class="fas fa-history"></i> Transaction History</h2>
+      <table id="historyTable">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>SSN ID</th>
+            <th>Name</th>
+            <th>Account</th>
+            <th>Type</th>
+            <th>Amount</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-container">
+      <div class="footer-about">
+        <div class="footer-logo">World<span>Bank</span></div>
+        <p>Providing secure banking services since 1985. Your trusted financial partner.</p>
+      </div>
+      
+      <div class="footer-links">
+        <h3>Quick Links</h3>
+        <ul>
+          <li><a href="home.html">Dashboard</a></li>
+          <li><a href="#">Transactions</a></li>
+          <li><a href="#">Customer Management</a></li>
+        </ul>
+      </div>
+      
+      <div class="footer-links">
+        <h3>Support</h3>
+        <ul>
+          <li><a href="#">Help Center</a></li>
+          <li><a href="#">Contact Us</a></li>
+          <li><a href="#">Privacy Policy</a></li>
+        </ul>
+      </div>
+    </div>
+    
+    <div class="footer-bottom">
+      <p>&copy; 2025 World Bank. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const form = document.getElementById('transactionForm');
+      const showHistoryBtn = document.getElementById('showHistoryBtn');
+      const historySection = document.getElementById('transactionHistory');
+      const historyTable = document.getElementById('historyTable').getElementsByTagName('tbody')[0];
+      
+      // Initialize transactions in localStorage if not exists
+      if (!localStorage.getItem('transactions')) {
+        localStorage.setItem('transactions', JSON.stringify([]));
+      }
+      
+      // Process transaction form
+      form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // Get form values
+        const transaction = {
+          id: Date.now(),
+          date: new Date().toLocaleString(),
+          ssnId: document.getElementById('ssnId').value,
+          customerName: document.getElementById('customerName').value,
+          accountNumber: document.getElementById('accountNumber').value,
+          type: document.getElementById('transactionType').value,
+          amount: parseFloat(document.getElementById('amount').value),
+          description: document.getElementById('description').value
+        };
+        
+        // Validate SSN (9 digits)
+        if (!/^\d{9}$/.test(transaction.ssnId)) {
+          alert('Please enter a valid 9-digit SSN ID');
+          return;
+        }
+        
+        // Save transaction
+        const transactions = JSON.parse(localStorage.getItem('transactions'));
+        transactions.push(transaction);
+        localStorage.setItem('transactions', JSON.stringify(transactions));
+        
+        // Reset form
+        form.reset();
+        alert('Transaction processed successfully!');
+      });
+      
+      // Show transaction history
+      showHistoryBtn.addEventListener('click', function() {
+        const transactions = JSON.parse(localStorage.getItem('transactions'));
+        
+        // Clear previous results
+        historyTable.innerHTML = '';
+        
+        // Add each transaction to the table
+        transactions.forEach(txn => {
+          const row = historyTable.insertRow();
+          row.innerHTML = `
+            <td>${txn.date}</td>
+            <td>${txn.ssnId}</td>
+            <td>${txn.customerName}</td>
+            <td>${txn.accountNumber}</td>
+            <td>${txn.type}</td>
+            <td>$${txn.amount.toFixed(2)}</td>
+            <td>${txn.description || '-'}</td>
+          `;
+        });
+        
+        // Toggle history section
+        historySection.classList.toggle('hidden');
+      });
+    });
+  </script>
 </body>
 </html>

@@ -1,172 +1,785 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Loan Management</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Loan Management</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+  <style>
+    :root {
+      --primary: #003366;
+      --secondary: #0056b3;
+      --accent: #ffcc00;
+      --light: #f8f9fa;
+      --dark: #212529;
+      --success: #28a745;
+      --error: #dc3545;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background: linear-gradient(135deg, rgba(0, 51, 102, 0.9), rgba(0, 86, 179, 0.9)), 
+                  url('https://images.unsplash.com/photo-1601597111158-2fceff292cdc?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80') no-repeat center center/cover;
+    }
+    
+    
+    /* Navbar Styles */
+    header {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      padding: 1rem 2rem;
+      color: white;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    
+    .header-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    .logo {
+      display: flex;
+      align-items: center;
+      
+    }
+    
+    .logo h1 {
+      font-size: 1.8rem;
+      margin: 0;
+      font-weight: 700;
+      color: white;
+    }
+    
+    .logo span {
+      color: var(--accent);
+    }
+    
+    nav ul {
+      display: flex;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+    
+    nav li {
+      margin-left: 1.5rem;
+    }
+    
+    nav a {
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.3s ease;
+    }
+    
+    nav a:hover {
+      color: var(--accent);
+    }
+    
+    /* Main Content Styles */
+    .container {
+      flex: 1;
+      max-width: 1000px;
+      margin: 1rem auto;
+      padding: 40px;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    
+    .dashboard-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+    
+    .back-btn {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 500;
+    }
+    
+    .back-btn:hover {
+      text-decoration: underline;
+    }
+    
+    h1, h2, h3 {
+      color: var(--primary);
+      margin: 10px;
+    }
+    
+    /* Tab Styles */
+    .loan-tabs {
+      display: flex;
+      border-bottom: 1px solid #ddd;
+      margin-bottom: 1.5rem;
+    }
+    
+    .tab-btn {
+      padding: 10px 20px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: 500;
+      color: var(--dark);
+      border-bottom: 3px solid transparent;
+      transition: all 0.3s ease;
+    }
+    
+    .tab-btn.active {
+      color: var(--primary);
+      border-bottom-color: var(--primary);
+    }
+    
+    .tab-content {
+      display: none;
+    }
+    
+    .tab-content.active {
+      display: block;
+    }
+    
+    /* Form Styles */
+    .form-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      margin-bottom: 1rem;
+    }
+    
+    .form-group {
+      flex: 1;
+      min-width: 200px;
+      margin-bottom: 1rem;
+    }
+    
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+      color: var(--primary);
+    }
+    
+    input, select, textarea {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-family: inherit;
+      font-size: 1rem;
+    }
+    
+    textarea {
+      min-height: 80px;
+      resize: vertical;
+    }
+    
+    /* Button Styles */
+    .submit-btn, .search-btn, .update-btn, .delete-btn {
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 4px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .submit-btn, .update-btn {
+      background-color: var(--primary);
+      color: white;
+    }
+    
+    .submit-btn:hover, .update-btn:hover {
+      background-color: var(--secondary);
+    }
+    
+    .search-btn {
+      background-color: var(--accent);
+      color: var(--dark);
+      margin-top: 0.5rem;
+    }
+    
+    .delete-btn {
+      background-color: var(--error);
+      color: white;
+      margin-top: 1rem;
+    }
+    
+    /* Loan Details Styles */
+    .loan-details {
+      background: #f9f9f9;
+      padding: 1.5rem;
+      border-radius: 8px;
+      margin-top: 1.5rem;
+    }
+    
+    .detail-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    
+    .detail-row {
+      display: flex;
+    }
+    
+    .detail-label {
+      font-weight: 500;
+      color: var(--primary);
+      min-width: 120px;
+    }
+    
+    /* Status Message */
+    .status-message {
+      padding: 1rem;
+      border-radius: 4px;
+      margin: 1rem 0;
+      text-align: center;
+    }
+    
+    .status-message.success {
+      background-color: rgba(40, 167, 69, 0.1);
+      color: var(--success);
+      border: 1px solid rgba(40, 167, 69, 0.3);
+    }
+    
+    .status-message.error {
+      background-color: rgba(220, 53, 69, 0.1);
+      color: var(--error);
+      border: 1px solid rgba(220, 53, 69, 0.3);
+    }
+    
+    .hidden {
+      display: none;
+    }
+    
+    /* Footer Styles */
+    footer {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: white;
+      padding: 2rem;
+      margin-top: auto;
+    }
+    
+    .footer-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 2rem;
+    }
+    
+    .footer-logo {
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+    
+    .footer-logo span {
+      color: var(--accent);
+    }
+    
+    .footer-links h3 {
+      font-size: 1.2rem;
+      margin-bottom: 1rem;
+      color: white;
+    }
+    
+    .footer-links ul {
+      list-style: none;
+      padding: 0;
+    }
+    
+    .footer-links a {
+      color: white;
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+    
+    .footer-links a:hover {
+      color: var(--accent);
+    }
+    
+    .footer-bottom {
+      text-align: center;
+      padding-top: 2rem;
+      margin-top: 2rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    @media (max-width: 768px) {
+      .header-container {
+        flex-direction: column;
+        text-align: center;
+      }
+      
+      nav ul {
+        margin-top: 1rem;
+      }
+      
+      nav li {
+        margin: 0 0.5rem;
+      }
+      
+      .form-row {
+        flex-direction: column;
+        gap: 0;
+      }
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <header class="dashboard-header">
-            <h2>Loan Management</h2>
-            <a href="home.html" class="back-btn">← Back to Dashboard</a>
-        </header>
+  <header>
+    <div class="header-container">
+      <div class="logo">
+        <h1>World<span>Bank</span></h1>
+      </div>
+      <nav>
+        <ul>
+          <li><a href="home.html"><i class="fas fa-home"></i> Dashboard</a></li>
+          <li><a href="transaction.html"><i class="fas fa-exchange-alt"></i> Transactions</a></li>
+          <li><a href="loan.html"><i class="fas fa-hand-holding-usd"></i> Loans</a></li>
+          <li><a href="login.html"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
 
-        <div class="loan-tabs">
-            <button class="tab-btn active" data-tab="create">Initiate Loan</button>
-            <button class="tab-btn" data-tab="manage">Manage Loans</button>
-        </div>
+  <div class="container">
+    <header class="dashboard-header">
+      <h2>Loan Management</h2>
+      <a href="home.html" class="back-btn">← Back to Dashboard</a>
+    </header>
 
-        <!-- Initiate Loan Form -->
-        <div id="createLoanForm" class="tab-content active">
-            <form id="newLoanForm">
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="loanSsnId">Customer SSN ID*</label>
-                        <input type="text" id="loanSsnId" pattern="\d{9}" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="loanCustomerName">Customer Name</label>
-                        <input type="text" id="loanCustomerName" readonly>
-                    </div>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="occupation">Occupation*</label>
-                        <input type="text" id="occupation" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="employerName">Employer Name*</label>
-                        <input type="text" id="employerName" required>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="employerAddress">Employer Address*</label>
-                    <textarea id="employerAddress" rows="2" required></textarea>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="loanEmail">Email*</label>
-                        <input type="email" id="loanEmail" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="loanContactNumber">Contact Number*</label>
-                        <input type="tel" id="loanContactNumber" pattern="\d{10}" required>
-                    </div>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="loanAddress">Address*</label>
-                        <textarea id="loanAddress" rows="2" required></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label for="maritalStatusLoan">Marital Status*</label>
-                        <select id="maritalStatusLoan" required>
-                            <option value="">Select</option>
-                            <option value="Single">Single</option>
-                            <option value="Married">Married</option>
-                            <option value="Divorced">Divorced</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="loanAmount">Loan Amount ($)*</label>
-                        <input type="number" id="loanAmount" min="1" step="0.01" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="loanDuration">Loan Duration (months)*</label>
-                        <input type="number" id="loanDuration" min="1" max="360" required>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="loanStatus">Loan Status*</label>
-                    <select id="loanStatus" required>
-                        <option value="Pending">Pending</option>
-                        <option value="Approved">Approved</option>
-                        <option value="Rejected">Rejected</option>
-                    </select>
-                </div>
-
-                <button type="submit" class="submit-btn">Initiate Loan</button>
-            </form>
-        </div>
-
-        <!-- Manage Loans Section -->
-        <div id="manageLoanForm" class="tab-content">
-            <div class="search-section">
-                <div class="form-group">
-                    <label for="searchLoan">Search Loan (SSN ID)</label>
-                    <input type="text" id="searchLoan" placeholder="Enter Customer SSN ID">
-                    <button id="searchLoanBtn" class="search-btn">Search</button>
-                </div>
-            </div>
-
-            <div id="loanDetails" class="loan-details hidden">
-                <h3>Loan Details</h3>
-                <div class="detail-grid">
-                    <div class="detail-row">
-                        <span class="detail-label">Loan ID:</span>
-                        <span id="viewLoanId" class="detail-value"></span>
-                    </div>
-                    <div class="detail-row">
-                        <span class="detail-label">Customer Name:</span>
-                        <span id="viewCustomerName" class="detail-value"></span>
-                    </div>
-                    <div class="detail-row">
-                        <span class="detail-label">SSN ID:</span>
-                        <span id="viewSsnId" class="detail-value"></span>
-                    </div>
-                    <div class="detail-row">
-                        <span class="detail-label">Loan Amount:</span>
-                        <span id="viewLoanAmount" class="detail-value"></span>
-                    </div>
-                    <div class="detail-row">
-                        <span class="detail-label">Duration:</span>
-                        <span id="viewLoanDuration" class="detail-value"></span>
-                    </div>
-                    <div class="detail-row">
-                        <span class="detail-label">Status:</span>
-                        <span id="viewLoanStatus" class="detail-value"></span>
-                    </div>
-                    <div class="detail-row">
-                        <span class="detail-label">Initiated On:</span>
-                        <span id="viewLoanDate" class="detail-value"></span>
-                    </div>
-                </div>
-
-                <div class="loan-actions">
-                    <form id="updateLoanForm" class="hidden">
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="updateLoanStatus">Update Status*</label>
-                                <select id="updateLoanStatus" required>
-                                    <option value="Pending">Pending</option>
-                                    <option value="Approved">Approved</option>
-                                    <option value="Rejected">Rejected</option>
-                                    <option value="Cancelled">Cancelled</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <button type="submit" class="update-btn">Update Loan</button>
-                            </div>
-                        </div>
-                    </form>
-                    <button id="deleteLoanBtn" class="delete-btn">Cancel Loan</button>
-                </div>
-            </div>
-        </div>
-
-        <div id="statusMessage" class="status-message hidden"></div>
+    <div class="loan-tabs">
+      <button class="tab-btn active" data-tab="create">Initiate Loan</button>
+      <button class="tab-btn" data-tab="manage">Manage Loans</button>
     </div>
 
-    <script src="loan.js"></script>
+    <!-- Initiate Loan Form -->
+    <div id="createLoanForm" class="tab-content active">
+      <form id="newLoanForm">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="loanSsnId">Customer SSN ID*</label>
+            <input type="text" id="loanSsnId" pattern="\d{9}" required>
+          </div>
+          <div class="form-group">
+            <label for="loanCustomerName">Customer Name</label>
+            <input type="text" id="loanCustomerName" readonly>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="occupation">Occupation*</label>
+            <input type="text" id="occupation" required>
+          </div>
+          <div class="form-group">
+            <label for="employerName">Employer Name*</label>
+            <input type="text" id="employerName" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="employerAddress">Employer Address*</label>
+          <textarea id="employerAddress" rows="2" required></textarea>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="loanEmail">Email*</label>
+            <input type="email" id="loanEmail" required>
+          </div>
+          <div class="form-group">
+            <label for="loanContactNumber">Contact Number*</label>
+            <input type="tel" id="loanContactNumber" pattern="\d{10}" required>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="loanAddress">Address*</label>
+            <textarea id="loanAddress" rows="2" required></textarea>
+          </div>
+          <div class="form-group">
+            <label for="maritalStatusLoan">Marital Status*</label>
+            <select id="maritalStatusLoan" required>
+              <option value="">Select</option>
+              <option value="Single">Single</option>
+              <option value="Married">Married</option>
+              <option value="Divorced">Divorced</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="loanAmount">Loan Amount ($)*</label>
+            <input type="number" id="loanAmount" min="1" step="0.01" required>
+          </div>
+          <div class="form-group">
+            <label for="loanDuration">Loan Duration (months)*</label>
+            <input type="number" id="loanDuration" min="1" max="360" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="loanStatus">Loan Status*</label>
+          <select id="loanStatus" required>
+            <option value="Pending">Pending</option>
+            <option value="Approved">Approved</option>
+            <option value="Rejected">Rejected</option>
+          </select>
+        </div>
+
+        <button type="submit" class="submit-btn">Initiate Loan</button>
+      </form>
+    </div>
+
+    <!-- Manage Loans Section -->
+    <div id="manageLoanForm" class="tab-content">
+      <div class="search-section">
+        <div class="form-group">
+          <label for="searchLoan">Search Loan (SSN ID)</label>
+          <input type="text" id="searchLoan" placeholder="Enter Customer SSN ID">
+          <button id="searchLoanBtn" class="search-btn">Search</button>
+        </div>
+      </div>
+
+      <div id="loanDetails" class="loan-details hidden">
+        <h3>Loan Details</h3>
+        <div class="detail-grid">
+          <div class="detail-row">
+            <span class="detail-label">Loan ID:</span>
+            <span id="viewLoanId" class="detail-value"></span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Customer Name:</span>
+            <span id="viewCustomerName" class="detail-value"></span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">SSN ID:</span>
+            <span id="viewSsnId" class="detail-value"></span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Loan Amount:</span>
+            <span id="viewLoanAmount" class="detail-value"></span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Duration:</span>
+            <span id="viewLoanDuration" class="detail-value"></span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Status:</span>
+            <span id="viewLoanStatus" class="detail-value"></span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Initiated On:</span>
+            <span id="viewLoanDate" class="detail-value"></span>
+          </div>
+        </div>
+
+        <div class="loan-actions">
+          <form id="updateLoanForm" class="hidden">
+            <div class="form-row">
+              <div class="form-group">
+                <label for="updateLoanStatus">Update Status*</label>
+                <select id="updateLoanStatus" required>
+                  <option value="Pending">Pending</option>
+                  <option value="Approved">Approved</option>
+                  <option value="Rejected">Rejected</option>
+                  <option value="Cancelled">Cancelled</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <button type="submit" class="update-btn">Update Loan</button>
+              </div>
+            </div>
+          </form>
+          <button id="deleteLoanBtn" class="delete-btn">Cancel Loan</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="statusMessage" class="status-message hidden"></div>
+  </div>
+
+  <footer>
+    <div class="footer-container">
+      <div class="footer-about">
+        <div class="footer-logo">World<span>Bank</span></div>
+        <p>Providing secure banking services since 1985. Your trusted financial partner.</p>
+      </div>
+      
+      <div class="footer-links">
+        <h3>Quick Links</h3>
+        <ul>
+          <li><a href="home.html">Dashboard</a></li>
+          <li><a href="transaction.html">Transactions</a></li>
+          <li><a href="loan.html">Loans</a></li>
+        </ul>
+      </div>
+      
+      <div class="footer-links">
+        <h3>Support</h3>
+        <ul>
+          <li><a href="#">Help Center</a></li>
+          <li><a href="#">Contact Us</a></li>
+          <li><a href="#">Privacy Policy</a></li>
+        </ul>
+      </div>
+    </div>
+    
+    <div class="footer-bottom">
+      <p>&copy; 2025 World Bank. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      // Check session
+      const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+      const session = JSON.parse(localStorage.getItem('currentSession') || {});
+      const employee = JSON.parse(localStorage.getItem('loggedInEmployee') || null);
+      
+      if (!isLoggedIn || !session.loggedIn || !employee) {
+        alert('Please login to continue');
+        window.location.href = 'login.html';
+        return;
+      }
+
+      // Set last activity time
+      localStorage.setItem('lastActivity', Date.now());
+
+      // Tab functionality
+      const tabs = document.querySelectorAll('.tab-btn');
+      tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+          tabs.forEach(t => t.classList.remove('active'));
+          tab.classList.add('active');
+          
+          document.querySelectorAll('.tab-content').forEach(content => {
+            content.classList.remove('active');
+          });
+          document.getElementById(tab.dataset.tab + 'LoanForm').classList.add('active');
+        });
+      });
+
+      // Initialize loans array if not exists
+      if (!localStorage.getItem('loans')) {
+        localStorage.setItem('loans', JSON.stringify([]));
+      }
+
+      // Auto-fill customer details when SSN is entered
+      document.getElementById('loanSsnId').addEventListener('input', function() {
+        const ssnId = this.value.trim();
+        if (ssnId.length !== 9) return;
+
+        const customers = JSON.parse(localStorage.getItem('customers') || '[]');
+        const customer = customers.find(c => c.ssnId === ssnId);
+
+        if (customer) {
+          document.getElementById('loanCustomerName').value = customer.name;
+          document.getElementById('loanEmail').value = customer.email;
+          document.getElementById('loanContactNumber').value = customer.contactNumber;
+          document.getElementById('loanAddress').value = customer.address;
+          document.getElementById('maritalStatusLoan').value = customer.maritalStatus || '';
+          
+          // Clear any previous error status
+          const statusElement = document.getElementById('statusMessage');
+          statusElement.classList.add('hidden');
+        } else {
+          showStatus('Customer not found with this SSN ID', 'error');
+          // Clear fields if customer not found
+          document.getElementById('loanCustomerName').value = '';
+          document.getElementById('loanEmail').value = '';
+          document.getElementById('loanContactNumber').value = '';
+          document.getElementById('loanAddress').value = '';
+        }
+      });
+
+      // Initiate Loan Form
+      const newLoanForm = document.getElementById('newLoanForm');
+      newLoanForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // Get form values
+        const loan = {
+          id: 'LN' + Date.now().toString().slice(-8),
+          ssnId: document.getElementById('loanSsnId').value.trim(),
+          customerName: document.getElementById('loanCustomerName').value,
+          occupation: document.getElementById('occupation').value.trim(),
+          employerName: document.getElementById('employerName').value.trim(),
+          employerAddress: document.getElementById('employerAddress').value.trim(),
+          email: document.getElementById('loanEmail').value.trim(),
+          contactNumber: document.getElementById('loanContactNumber').value.trim(),
+          address: document.getElementById('loanAddress').value.trim(),
+          maritalStatus: document.getElementById('maritalStatusLoan').value,
+          amount: parseFloat(document.getElementById('loanAmount').value),
+          duration: parseInt(document.getElementById('loanDuration').value),
+          status: document.getElementById('loanStatus').value,
+          initiatedBy: session.empId,
+          initiatedAt: new Date().toISOString(),
+          lastUpdatedAt: new Date().toISOString()
+        };
+
+        // Validation
+        if (!validateLoan(loan)) {
+          return;
+        }
+
+        // Save loan
+        const loans = JSON.parse(localStorage.getItem('loans') || '[]');
+        loans.push(loan);
+        localStorage.setItem('loans', JSON.stringify(loans));
+
+        // Show success message
+        showStatus('Loan Initiated Successfully!', 'success');
+        newLoanForm.reset();
+        
+        // Reset the SSN ID field but keep others cleared
+        document.getElementById('loanSsnId').value = '';
+      });
+
+      // Search Loan Functionality
+      const searchLoanBtn = document.getElementById('searchLoanBtn');
+      searchLoanBtn.addEventListener('click', function() {
+        const searchTerm = document.getElementById('searchLoan').value.trim();
+        if (!searchTerm) {
+          showStatus('Please enter SSN ID', 'error');
+          return;
+        }
+
+        const loans = JSON.parse(localStorage.getItem('loans') || '[]');
+        const loan = loans.find(l => l.ssnId === searchTerm);
+
+        if (!loan) {
+          showStatus('Loan not found for this SSN ID', 'error');
+          return;
+        }
+
+        // Display loan details
+        displayLoanDetails(loan);
+      });
+
+      // Update Loan Form
+      const updateLoanForm = document.getElementById('updateLoanForm');
+      updateLoanForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const searchTerm = document.getElementById('searchLoan').value.trim();
+        const loans = JSON.parse(localStorage.getItem('loans') || '[]');
+        const loanIndex = loans.findIndex(l => l.ssnId === searchTerm);
+
+        if (loanIndex === -1) {
+          showStatus('Loan not found', 'error');
+          return;
+        }
+
+        // Update loan status
+        loans[loanIndex].status = document.getElementById('updateLoanStatus').value;
+        loans[loanIndex].lastUpdatedAt = new Date().toISOString();
+        loans[loanIndex].updatedBy = session.empId;
+
+        localStorage.setItem('loans', JSON.stringify(loans));
+        showStatus('Loan Updated Successfully!', 'success');
+        
+        // Refresh displayed details
+        displayLoanDetails(loans[loanIndex]);
+      });
+
+      // Delete Loan Button
+      const deleteLoanBtn = document.getElementById('deleteLoanBtn');
+      deleteLoanBtn.addEventListener('click', function() {
+        const searchTerm = document.getElementById('searchLoan').value.trim();
+        let loans = JSON.parse(localStorage.getItem('loans') || '[]');
+        
+        // Filter out the loan to be deleted
+        loans = loans.filter(l => l.ssnId !== searchTerm);
+
+        localStorage.setItem('loans', JSON.stringify(loans));
+        showStatus('Loan Cancelled Successfully!', 'success');
+        
+        // Reset the form
+        document.getElementById('searchLoan').value = '';
+        document.getElementById('loanDetails').classList.add('hidden');
+        document.getElementById('updateLoanForm').classList.add('hidden');
+      });
+
+      // Helper functions
+      function validateLoan(loan) {
+        if (!loan.ssnId || !loan.occupation || !loan.employerName || 
+            !loan.employerAddress || !loan.email || !loan.contactNumber || 
+            !loan.address || !loan.maritalStatus || isNaN(loan.amount) || 
+            isNaN(loan.duration) || !loan.status) {
+          showStatus('Please fill all required fields', 'error');
+          return false;
+        }
+
+        if (loan.amount <= 0) {
+          showStatus('Loan amount must be greater than 0', 'error');
+          return false;
+        }
+
+        if (loan.duration <= 0) {
+          showStatus('Loan duration must be greater than 0', 'error');
+          return false;
+        }
+
+        // Verify customer exists
+        const customers = JSON.parse(localStorage.getItem('customers') || '[]');
+        const customer = customers.find(c => c.ssnId === loan.ssnId);
+        if (!customer) {
+          showStatus('Customer not found - please verify SSN ID', 'error');
+          return false;
+        }
+
+        return true;
+      }
+
+      function displayLoanDetails(loan) {
+        document.getElementById('viewLoanId').textContent = loan.id;
+        document.getElementById('viewCustomerName').textContent = loan.customerName;
+        document.getElementById('viewSsnId').textContent = loan.ssnId;
+        document.getElementById('viewLoanAmount').textContent = `$${loan.amount.toFixed(2)}`;
+        document.getElementById('viewLoanDuration').textContent = `${loan.duration} months`;
+        document.getElementById('viewLoanStatus').textContent = loan.status;
+        document.getElementById('viewLoanDate').textContent = new Date(loan.initiatedAt).toLocaleString();
+
+        // Show update form
+        document.getElementById('updateLoanStatus').value = loan.status;
+        document.getElementById('updateLoanForm').classList.remove('hidden');
+        
+        // Show loan details
+        document.getElementById('loanDetails').classList.remove('hidden');
+      }
+
+      function showStatus(message, type) {
+        const statusElement = document.getElementById('statusMessage');
+        statusElement.textContent = message;
+        statusElement.className = 'status-message ' + type;
+        statusElement.classList.remove('hidden');
+        
+        setTimeout(() => {
+          statusElement.classList.add('hidden');
+        }, 3000);
+      }
+      
+      // Add activity tracking
+      document.addEventListener('click', function() {
+        localStorage.setItem('lastActivity', Date.now());
+      });
+    });
+  </script>
 </body>
 </html>
